@@ -1,0 +1,30 @@
+name = "webhook-relay"
+main = "src/index.js"   # Worker port of relay.py
+compatibility_date = "2026-10-01"
+compatibility_flags = ["nodejs_compat"]  # relay-core uses Buffer
+
+
+[[durable_objects.bindings]]
+name = "SOURCE_STATE"       # rate limit + circuit breaker state, strongly consistent
+class_name = "SourceState"
+
+[[migrations]]
+tag = "v1"
+new_sqlite_classes = ["SourceState"]
+
+[triggers]
+crons = ["* * * * *"]       # runs tick(): retries, backoff, purge
+
+[vars]
+RATE_RPM = "60"
+MAX_RETRIES = "5"
+CB_THRESHOLD = "3"
+CB_COOLDOWN_S = "30"
+RETENTION_S = "604800"
+# Per-source HMAC secrets: npx wrangler secret put SECRET_<SOURCE_ID>
+# Per-source delivery URL: TARGET_<SOURCE_ID>
+
+[[rules]]
+type = "Text"
+globs = ["**/*.html"]
+fallthrough = true

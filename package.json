@@ -1,0 +1,1 @@
+{"type":"module","devDependencies":{"wrangler":"^3.114.17"},"scripts":{"test":"node --test"},"name":"webhook-relay","license":"MIT"}
