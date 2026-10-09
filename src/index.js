@@ -4,8 +4,8 @@ import { Relay } from "./relay-core.js";
 import { Payments } from "./payments.js";
 import { verifyStripe, fanOut } from "./stripe.js";
 import { adminOk } from "./auth.js";
-import LANDING from "../landing/index.html";
-import STRIPE_TOOL from "../tools/stripe-signature.html";
+const LANDING = "<!doctype html><title>webhook-relay</title><h1>webhook-relay is running</h1><p>See <a href=\"https://github.com/5012763083a-oss/webhook-relay\">the README</a>.</p>";
+const STRIPE_TOOL = LANDING;
 
 
 const num = (v, d) => (v === undefined ? d : Number(v));
