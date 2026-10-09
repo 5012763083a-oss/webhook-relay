@@ -1,0 +1,82 @@
+{
+  "provider": "stripe",
+  "env": "STRIPE_WEBHOOK_SECRET",
+  "secret": "whsec_test_fixture_secret_not_real",
+  "generated_at": 1791555386,
+  "event_id": "evt_fixture_1791555386",
+  "cases": [
+    {
+      "name": "valid",
+      "headers": {
+        "content-type": "application/json; charset=utf-8",
+        "stripe-signature": "t=1791555386,v1=5b74f424ba1378bd87110b16887bda287a3b7acd92f7e0d4472888f0c45e1b30"
+      },
+      "body": "{\"id\":\"evt_fixture_1791555386\",\"object\":\"event\",\"type\":\"checkout.session.completed\",\"created\":1791555386,\"data\":{\"object\":{\"id\":\"cs_test_fixture\",\"object\":\"checkout.session\",\"amount_total\":1900,\"currency\":\"usd\"}}}",
+      "expect": 200
+    },
+    {
+      "name": "valid_multiple_v1_secret_rotation",
+      "headers": {
+        "content-type": "application/json; charset=utf-8",
+        "stripe-signature": "t=1791555386,v1=0000000000000000000000000000000000000000000000000000000000000000,v1=5b74f424ba1378bd87110b16887bda287a3b7acd92f7e0d4472888f0c45e1b30,v0=deadbeef"
+      },
+      "body": "{\"id\":\"evt_fixture_1791555386\",\"object\":\"event\",\"type\":\"checkout.session.completed\",\"created\":1791555386,\"data\":{\"object\":{\"id\":\"cs_test_fixture\",\"object\":\"checkout.session\",\"amount_total\":1900,\"currency\":\"usd\"}}}",
+      "expect": 200
+    },
+    {
+      "name": "tampered_body",
+      "headers": {
+        "content-type": "application/json; charset=utf-8",
+        "stripe-signature": "t=1791555386,v1=5b74f424ba1378bd87110b16887bda287a3b7acd92f7e0d4472888f0c45e1b30"
+      },
+      "body": "{\"id\":\"evt_fixture_1791555386\",\"object\":\"event\",\"type\":\"checkout.session.completed\",\"created\":1791555386,\"data\":{\"object\":{\"id\":\"cs_test_fixture\",\"object\":\"checkout.session\",\"amount_total\":1,\"currency\":\"usd\"}}}",
+      "expect": 401
+    },
+    {
+      "name": "wrong_secret",
+      "headers": {
+        "content-type": "application/json; charset=utf-8",
+        "stripe-signature": "t=1791555386,v1=1049a21e6111ebe288ac456035ae363852f40e997e0d034589da31d2f4d02c57"
+      },
+      "body": "{\"id\":\"evt_fixture_1791555386\",\"object\":\"event\",\"type\":\"checkout.session.completed\",\"created\":1791555386,\"data\":{\"object\":{\"id\":\"cs_test_fixture\",\"object\":\"checkout.session\",\"amount_total\":1900,\"currency\":\"usd\"}}}",
+      "expect": 401
+    },
+    {
+      "name": "missing_header",
+      "headers": {
+        "content-type": "application/json"
+      },
+      "body": "{\"id\":\"evt_fixture_1791555386\",\"object\":\"event\",\"type\":\"checkout.session.completed\",\"created\":1791555386,\"data\":{\"object\":{\"id\":\"cs_test_fixture\",\"object\":\"checkout.session\",\"amount_total\":1900,\"currency\":\"usd\"}}}",
+      "expect": 401
+    },
+    {
+      "name": "stale_timestamp_600s",
+      "headers": {
+        "content-type": "application/json; charset=utf-8",
+        "stripe-signature": "t=1791554786,v1=073fd0eb9d15c0870f8be68fe0678698b4f025b279b691784537cbc3ccdc6281"
+      },
+      "body": "{\"id\":\"evt_fixture_1791555386\",\"object\":\"event\",\"type\":\"checkout.session.completed\",\"created\":1791555386,\"data\":{\"object\":{\"id\":\"cs_test_fixture\",\"object\":\"checkout.session\",\"amount_total\":1900,\"currency\":\"usd\"}}}",
+      "expect": 401,
+      "note": "outside 300 s tolerance"
+    },
+    {
+      "name": "future_timestamp_600s",
+      "headers": {
+        "content-type": "application/json; charset=utf-8",
+        "stripe-signature": "t=1791555986,v1=4a49905783b5a4e7f6784dd9e86b5a7825fca99d58623a84077c7d86beab87cf"
+      },
+      "body": "{\"id\":\"evt_fixture_1791555386\",\"object\":\"event\",\"type\":\"checkout.session.completed\",\"created\":1791555386,\"data\":{\"object\":{\"id\":\"cs_test_fixture\",\"object\":\"checkout.session\",\"amount_total\":1900,\"currency\":\"usd\"}}}",
+      "expect": 401
+    },
+    {
+      "name": "reserialized_json",
+      "headers": {
+        "content-type": "application/json; charset=utf-8",
+        "stripe-signature": "t=1791555386,v1=5b74f424ba1378bd87110b16887bda287a3b7acd92f7e0d4472888f0c45e1b30"
+      },
+      "body": "{\n  \"id\": \"evt_fixture_1791555386\",\n  \"object\": \"event\",\n  \"type\": \"checkout.session.completed\",\n  \"created\": 1791555386,\n  \"data\": {\n    \"object\": {\n      \"id\": \"cs_test_fixture\",\n      \"object\": \"checkout.session\",\n      \"amount_total\": 1900,\n      \"currency\": \"usd\"\n    }\n  }\n}",
+      "expect": 401,
+      "note": "pretty-printed body = what a JSON parser + re-stringify would produce"
+    }
+  ]
+}

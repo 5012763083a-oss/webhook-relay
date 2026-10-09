@@ -1,0 +1,20 @@
+{
+  "name": "webhook-skill-pack-free-stripe",
+  "version": "1.0.1",
+  "private": true,
+  "type": "module",
+  "description": "Stripe webhook skill: free sample of the Webhook Skill Pack",
+  "scripts": {
+    "fixtures": "node fixtures/generate.mjs --only stripe",
+    "test:js": "node --test tests/js/",
+    "test:py": "python3 -m pytest -q tests/py",
+    "test:next": "node scripts/next-build-check.mjs",
+    "test": "npm run test:js && npm run test:py"
+  },
+  "devDependencies": {
+    "@types/node": "^20.19.43",
+    "express": "^5.1.0",
+    "stripe": "^17.7.0",
+    "typescript": "^5.6.0"
+  }
+}
